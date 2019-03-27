@@ -1,22 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Index } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
 import User from '../users/entity'
 import Game from '../games/entity'
 import { IsNumber } from 'class-validator'
 
 @Entity()
+@Index(['game', 'user'], {unique:true})
 export default class Player extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
 
-  @OneToMany(() => User, user => user.id)
+  @ManyToOne(() => User, user => user.players)
   @Column('text')
-  User: number
+  user: User
   
-  @OneToMany(() => Game, game => game.id)
+  @ManyToOne(() => Game, game => game.players)
   @Column('text')
-  game: number
+  game: Game
 
   @IsNumber()
   @Column('text')
