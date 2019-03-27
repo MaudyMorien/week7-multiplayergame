@@ -9,7 +9,7 @@ export default class QuestionController {
   getQuestion(
     @Param('id') id: number
   ) {
-    return Question.findOne(id)
+    return Question.findOneById(id)
   }
 
   @Get('/questions')

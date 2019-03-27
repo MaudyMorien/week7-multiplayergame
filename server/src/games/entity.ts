@@ -1,9 +1,40 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm'
-import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import { IsString } from 'class-validator'
-import Player from '../players/entity'
+import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, Index, OneToMany, ManyToOne} from 'typeorm'
+// import User from '../users/entity'
+import Player from '../players/entity';
+import { IsString } from 'class-validator';
+
+export type Symbol = 'x' | 'o'
+export type Row = [ Symbol | null, Symbol | null, Symbol | null ]
+export type Board = [ Row, Row, Row ]
 
 type Status = 'pending' | 'started' | 'finished'
+
+const emptyRow: Row = [null, null, null]
+const emptyBoard: Board = [ emptyRow, emptyRow, emptyRow ]
+
+// @Entity()
+// export class Game extends BaseEntity {
+
+//   @PrimaryGeneratedColumn()
+//   id?: number
+
+//   @Column('json', {default: emptyBoard})
+//   board: Board
+
+//   @Column('char', {length:1, default: 'x'})
+//   turn: Symbol
+
+//   @Column('char', {length:1, nullable: true})
+//   winner: Symbol
+
+//   @Column('text', {default: 'pending'})
+//   status: Status
+
+//   // this is a relation, read more about them here:
+//   // http://typeorm.io/#/many-to-one-one-to-many-relations
+//   @OneToMany(_ => Player, player => player.game, {eager:true})
+//   players: Player[]
+// }
 
 @Entity()
     export default class Game extends BaseEntity {
@@ -19,4 +50,24 @@ type Status = 'pending' | 'started' | 'finished'
         
         @OneToMany(_ => Player, player => player.game, {eager:true})
         players: Player[]
-    }
+  }
+
+// @Entity()
+// @Index(['game', 'user', 'symbol'], {unique:true})
+// export class Player extends BaseEntity {
+
+//   @PrimaryGeneratedColumn()
+//   id?: number
+
+//   @ManyToOne(_ => User, user => user.players)
+//   user: User
+
+//   @ManyToOne(_ => Game, game => game.players)
+//   game: Game
+
+//   @Column('char', {length: 1})
+//   symbol: Symbol
+
+//   @Column('integer', { name: 'user_id' })
+//   userId: number
+// }

@@ -1,7 +1,7 @@
 // Copy from GamesList
 
 import React, {PureComponent} from 'react'
-import {getGames, createGame} from '../../actions/games'
+import {getGames, createGame, apiTest} from '../../actions/games'
 import {getUsers} from '../../actions/users'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
@@ -27,12 +27,14 @@ const qAs = [
 ]
 
 class QuestionsList extends PureComponent {
-//   componentWillMount() {
-//     if (this.props.authenticated) {
-//       if (this.props.games === null) this.props.getGames()
-//       if (this.props.users === null) this.props.getUsers()
-//     }
-//   }
+  componentDidMount() {
+    this.props.apiTest()
+    
+    // if (this.props.authenticated) {
+    //   if (this.props.games === null) this.props.getGames()
+    //   if (this.props.users === null) this.props.getUsers()
+    // }
+  }
 
 //   renderGame = (game) => {
 //     console.log(this.props, 'props')
@@ -137,10 +139,10 @@ render() {
 }
 
 const mapStateToProps = state => ({
-  authenticated: state.currentUser !== null,
+  // authenticated: state.currentUser !== null,
   users: state.users === null ? null : state.users,
   games: state.games === null ?
     null : Object.values(state.games).sort((a, b) => b.id - a.id)
 })
 
-export default connect(mapStateToProps, {getGames, getUsers, createGame})(QuestionsList)
+export default connect(mapStateToProps, {getGames, getUsers, createGame, apiTest})(QuestionsList)

@@ -9,7 +9,7 @@ export default class PlayerController {
   getPlayer(
     @Param('id') id: number
   ) {
-    return Player.findOne(id)
+    return Player.findOneById(id)
   }
 
   @Get('/players')
