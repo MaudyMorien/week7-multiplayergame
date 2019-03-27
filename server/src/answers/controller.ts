@@ -6,7 +6,7 @@ import { getConnection } from "typeorm"
 export default class AnswerController {
 
   @Get('/answers/:id')
-  getPage(
+  getAnswer(
     @Param('id') id: number
   ) {
     return Answer.findOne(id)

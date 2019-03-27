@@ -6,7 +6,7 @@ import { getConnection } from "typeorm"
 export default class PlayerController {
 
   @Get('/players/:id')
-  getPage(
+  getPlayer(
     @Param('id') id: number
   ) {
     return Player.findOne(id)

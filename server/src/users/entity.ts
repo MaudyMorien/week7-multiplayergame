@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
 import { IsString, Length } from 'class-validator'
+import Player from '../players/entity'
 
 @Entity()
 export default class User extends BaseEntity {
@@ -13,4 +14,6 @@ export default class User extends BaseEntity {
   @Column('text')
   name: string
 
+  @OneToMany(_ => Player, player => player.user) 
+  players: Player[]
 }

@@ -1,7 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
 import { IsString } from 'class-validator'
-import User from '../users/entity'
+import Player from '../players/entity'
+
+type Status = 'pending' | 'started' | 'finished'
 
 @Entity()
     export default class Game extends BaseEntity {
@@ -12,7 +14,9 @@ import User from '../users/entity'
         @Column('text')
         name: string
        
-        @OneToMany(() => User, user => user.id)
-        public relations: User
-
+        @Column('text', {default: 'pending'})
+        status: Status
+        
+        @OneToMany(_ => Player, player => player.game, {eager:true})
+        players: Player[]
     }

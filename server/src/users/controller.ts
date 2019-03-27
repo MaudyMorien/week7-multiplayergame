@@ -6,7 +6,7 @@ import { getConnection } from "typeorm"
 export default class UserController {
 
   @Get('/users/:id')
-  getPage(
+  getUser(
     @Param('id') id: number
   ) {
     return User.findOne(id)
