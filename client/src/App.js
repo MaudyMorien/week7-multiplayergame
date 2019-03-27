@@ -8,7 +8,7 @@ import QuestionsList from './components/games/QuestionsList'
 import LogoutPage from './components/logout/LogoutPage'
 import './App.css'
 import TopBar from './components/layout/TopBar'
-import Landing from './components/games/landingPage';
+import Landing from './components/games/LandingPage';
 
 // <Route exact path="/signup" component={SignupPage} />
 // <Route exact path="/games" component={GamesList} />

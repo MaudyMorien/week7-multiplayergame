@@ -12,11 +12,11 @@ export default class Player extends BaseEntity {
   id?: number
 
   @ManyToOne(() => User, user => user.players)
-  @Column('text')
+  // @Column('text')
   user: User
   
   @ManyToOne(() => Game, game => game.players)
-  @Column('text')
+  // @Column('text')
   game: Game
 
   @IsNumber()

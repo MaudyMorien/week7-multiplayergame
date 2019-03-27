@@ -15,11 +15,11 @@ export default class Answer extends BaseEntity {
   answer: boolean
   
   @ManyToOne(() => User, user => user.id)
-  @Column('text')
-  user: number
+  // @Column('text')
+  user: User
 
   @ManyToOne(() => Question, question => question.id)
-  @Column('text')
-  question: number
+  // @Column('text')
+  question: Question
 
 }

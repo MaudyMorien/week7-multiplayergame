@@ -11,7 +11,7 @@ import { Card, CardActions, CardContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import './GamesList.css'
 import { Link } from 'react-router-dom';
-import Landing from './landingPage';
+import Landing from './LandingPage';
 
 const qAs = [
     {

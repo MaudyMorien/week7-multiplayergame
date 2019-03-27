@@ -11,7 +11,7 @@ export default class Landing extends React.Component {
                     <li>"Correct" answer will be revealed at the end of each question. You get 1 point for correct one, otherwise 0</li>
                     <li>The game ends when one player get 5 points. To make the game even more fun, there is no scoreboard at all</li>
                 </ol>
-                <Link to={'/games'}><button>Why not dive in right now?</button></Link>
+                <Link to={'/login'}><button>Sign in/Log in to play</button></Link>
             </div>
         )
     }
