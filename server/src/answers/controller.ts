@@ -1,37 +1,37 @@
 import { JsonController, Get, Param, Body, Post, Delete, HttpCode } from 'routing-controllers'
-import User  from './entity'
+import Answer  from './entity'
 import { getConnection } from "typeorm"
 
 @JsonController()
-export default class UserController {
+export default class AnswerController {
 
-  @Get('/users/:id')
+  @Get('/answers/:id')
   getPage(
     @Param('id') id: number
   ) {
-    return User.findOne(id)
+    return Answer.findOne(id)
   }
 
-  @Get('/users')
-  async allUsers() {
-    const users: User[] = await User.find()
-    return { users }
+  @Get('/answers')
+  async allAnswers() {
+    const answers: Answer[] = await Answer.find()
+    return { answers }
   }
 
-  @Post('/users')
+  @Post('/answers')
   @HttpCode(201)
-  async createUser(
-    @Body() User: User
+  async createAnswer(
+    @Body() Answer: Answer
   ) {
-    return User.save()
+    return Answer.save()
   }
 
-  @Delete('/users/:id')
+  @Delete('/answers/:id')
   async deleteGame() {
       await getConnection()
           .createQueryBuilder()
           .delete()
-          .from(User)
+          .from(Answer)
           .where("id = :id", { id: 1 })
           .execute()
   }
