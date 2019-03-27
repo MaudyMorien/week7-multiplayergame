@@ -10,6 +10,8 @@ import Paper from '@material-ui/core/Paper'
 import { Card, CardActions, CardContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import './GamesList.css'
+import { Link } from 'react-router-dom';
+import Landing from './landingPage';
 
 const qAs = [
     {
@@ -114,10 +116,10 @@ render() {
     console.log('props', this.props)
     const {games, users, authenticated, createGame} = this.props
 
-    if (!authenticated) return (
-			<Redirect to="/login" />
-		)
-
+    // if (!authenticated) return (
+		// 	<Redirect to="/login" />
+    // )
+    
     // if (games === null || users === null) return null
 
     return (<Paper className="outer-paper">
@@ -129,6 +131,8 @@ render() {
       <Button>No</Button>
       {/* <Button onClick={some function, here the result and move to the next random question}> is needed! */}
     </Paper>)
+  
+      // {Landing}
   }
 }
 
