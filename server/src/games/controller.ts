@@ -9,14 +9,6 @@ import Player from '../players/entity'
 // import { Validate } from 'class-validator'
 import {io} from '../index'
 
-class GameUpdate {
-
-  // @Validate(IsBoard, {
-  //   message: 'Not a valid board'
-  // })
-  // board: Board
-}
-
 @JsonController()
 export default class GameController {
 
@@ -64,18 +56,11 @@ export default class GameController {
 
     await game.save()
 
-    console.log('before test!')
     const player = await Player.create({
       game,
       user
     })
-    console.log('game test:', game)
-    console.log('user test:', user)
-    console.log('player test:', player)
-    console.table('game.players test:', game.players)
-    console.log('middle test!')
     await player.save()
-    console.log('after test!')
 
     io.emit('action', {
       type: 'UPDATE_GAME',
@@ -88,11 +73,57 @@ export default class GameController {
   // the reason that we're using patch here is because this request is not idempotent
   // http://restcookbook.com/HTTP%20Methods/idempotency/
   // try to fire the same requests twice, see what happens
-  @Patch('/games/:id([0-9]+)')
+  @Post('/games/:id([0-9]+)')
   async updateGame(
     @CurrentUser() user: User,
     @Param('id') gameId: number,
-    @Body() update: GameUpdate
+    @Body() update // { status: 'started' }
+  ) {
+    const game = await Game.findOneById(gameId)
+    if (!game) throw new NotFoundError(`Game does not exist`)
+
+    const player = await Player.findOne({ user, game })
+
+    if (!player) throw new ForbiddenError(`You are not part of this game`)
+
+    const isPlayerTheHost = true
+
+    const isStatusPending = game.status === 'pending'
+
+    const isAllowedToChange = isStatusPending ? isPlayerTheHost : true
+    
+    if (isAllowedToChange) {
+      const updateKeys = Object.keys(update) // ['status']
+
+      updateKeys
+        .map(updateKey => // 'status'
+          {
+            game[updateKey] = update[updateKey]
+          }
+        )
+
+      await game.save()
+    } else {
+      throw new BadRequestError(`It's not your turn`)
+    }
+    
+    // if (player.symbol !== game.turn) 
+    // if (!isValidTransition(player.symbol, game.board, update.board)) {
+    //   throw new BadRequestError(`Invalid move`)
+    // }    
+    
+    io.emit('action', {
+      type: 'UPDATE_GAME',
+      payload: game
+    })
+
+    return game
+  }
+
+  @Post('/games/:id([0-9]+)/start')
+  async startGame(
+    @CurrentUser() user: User,
+    @Param('id') gameId: number
   ) {
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
