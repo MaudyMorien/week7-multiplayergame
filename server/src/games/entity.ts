@@ -1,7 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm'
-import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import { IsString } from 'class-validator'
-import Player from '../players/entity'
+import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, OneToMany } from 'typeorm'
+import Player from '../players/entity';
+import { IsString } from 'class-validator';
+
+
+export type Row = [ Symbol | null, Symbol | null, Symbol | null ]
+export type Board = [ Row, Row, Row ]
 
 type Status = 'pending' | 'started' | 'finished'
 
@@ -19,4 +22,4 @@ type Status = 'pending' | 'started' | 'finished'
         
         @OneToMany(_ => Player, player => player.game, {eager:true})
         players: Player[]
-    }
+  }

@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import User from '../users/entity'
+import Player from '../players/entity'
 import Question from '../questions/entity'
-import { IsBoolean } from 'class-validator'
+import { IsNumber } from 'class-validator'
+import Game from '../games/entity'
 
 @Entity()
 export default class Answer extends BaseEntity {
@@ -10,16 +11,20 @@ export default class Answer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @IsBoolean()
+  @IsNumber()
   @Column('text')
-  answer: boolean
-  
-  @ManyToOne(() => User, user => user.id)
-  @Column('text')
-  user: number
+  answer: number
+    
+  @ManyToOne(() => Game, game => game.id)
+  // @Column('text')
+  game: Game
+
+  @ManyToOne(() => Player, player => player.id)
+  // @Column('text')
+  player: Player
 
   @ManyToOne(() => Question, question => question.id)
-  @Column('text')
-  question: number
+  // @Column('text')
+  question: Question
 
 }

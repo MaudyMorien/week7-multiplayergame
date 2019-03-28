@@ -1,38 +1,39 @@
-import { JsonController, Get, Param, Body, Post, Delete, HttpCode } from 'routing-controllers'
-import User  from './entity'
-import { getConnection } from "typeorm"
+import { JsonController, Post, Param, Get, Body, Authorized } from 'routing-controllers'
+import User from './entity';
+import { io } from '../index'
 
 @JsonController()
 export default class UserController {
 
-  @Get('/users/:id')
+  @Post('/users')
+  async signup(
+    @Body() data: User
+  ) {
+    const {password, ...rest} = data
+    const entity = User.create(rest)
+    await entity.setPassword(password)
+
+    const user = await entity.save()
+
+    io.emit('action', {
+      type: 'ADD_USER',
+      payload: entity
+    })
+
+    return user
+  }
+
+  @Authorized()
+  @Get('/users/:id([0-9]+)')
   getUser(
     @Param('id') id: number
   ) {
-    return User.findOne(id)
+    return User.findOneById(id)
   }
 
+  @Authorized()
   @Get('/users')
-  async allUsers() {
-    const users: User[] = await User.find()
-    return { users }
-  }
-
-  @Post('/users')
-  @HttpCode(201)
-  async createUser(
-    @Body() User: User
-  ) {
-    return User.save()
-  }
-
-  @Delete('/users/:id')
-  async deleteGame() {
-      await getConnection()
-          .createQueryBuilder()
-          .delete()
-          .from(User)
-          .where("id = :id", { id: 1 })
-          .execute()
+  allUsers() {
+    return User.find()
   }
 }
