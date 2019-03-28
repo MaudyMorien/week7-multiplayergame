@@ -18,6 +18,7 @@ class GameDetails extends PureComponent {
   }
 
   joinGame = () => this.props.joinGame(this.props.game.id)
+  
 
   makeMove = (toRow, toCell) => {
     const {game, updateGame} = this.props
@@ -35,6 +36,7 @@ class GameDetails extends PureComponent {
 
   render() {
     const {game, users, authenticated, userId} = this.props
+    console.log('renderprops', this.props)
 
     if (!authenticated) return (
 			<Redirect to="/login" />
@@ -44,7 +46,8 @@ class GameDetails extends PureComponent {
     if (!game) return 'Not found'
 
     const player = game.players.find(p => p.userId === userId)
-
+    const playerWaiting = Object.values(game.players).map(user => <div>{user.user.email}</div>)
+    
     const winner = game.players
       .filter(p => p.symbol === game.winner)
       .map(p => p.userId)[0]
@@ -53,7 +56,7 @@ class GameDetails extends PureComponent {
       <h1>Game #{game.id}</h1>
 
       <p>Status: {game.status}</p>
-
+      <h3>Players waiting: {playerWaiting}</h3>
       {
         game.status === 'started' &&
         player && player.symbol === game.turn &&
@@ -66,7 +69,7 @@ class GameDetails extends PureComponent {
           .players
           .map(p => p.userId)
           .indexOf(userId) === -1 &&
-        <button onClick={this.joinGame}>Join Game</button>
+        <button onClick={this.joinGame}>join Game</button>
       }
 
       {
