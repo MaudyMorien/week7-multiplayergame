@@ -11,7 +11,6 @@ export default (state = null, {type, payload}) => {
       return null
     
     case ADD_GAME:
-      console.log('payload test:', payload)
       return {
         ...state,
         [payload.id]: payload
@@ -24,7 +23,6 @@ export default (state = null, {type, payload}) => {
       }
 
     case UPDATE_GAMES:
-      console.log('payload', payload)
       return payload.reduce((games, game) => {
         games[game.id] = game
         return games

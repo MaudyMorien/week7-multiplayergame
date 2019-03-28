@@ -25,14 +25,24 @@ export default class GameController {
   async createGame(
     @CurrentUser() user: User
   ) {
-    const entity = await Game.create({name: 'blabla'}).save()
+    console.log('\nCREATE GAME')
+    const entity = await Game.create().save()
+    console.log('entity test:', entity)
 
-    await Player.create({
+    const player = await Player.create({
       game: entity, 
       user
-    }).save()
+    })
+
+    console.log('player test:', player)
+    
+    await player.save()
+
+    console.log('after test:', player)
 
     const game = await Game.findOneById(entity.id)
+
+    console.log('game test:', game) 
 
     io.emit('action', {
       type: 'ADD_GAME',
@@ -52,13 +62,20 @@ export default class GameController {
     if (!game) throw new BadRequestError(`Game does not exist`)
     if (game.status !== 'pending') throw new BadRequestError(`Game is already started`)
 
-    game.status = 'started'
     await game.save()
 
+    console.log('before test!')
     const player = await Player.create({
-      game, 
+      game,
       user
-    }).save()
+    })
+    console.log('game test:', game)
+    console.log('user test:', user)
+    console.log('player test:', player)
+    console.table('game.players test:', game.players)
+    console.log('middle test!')
+    await player.save()
+    console.log('after test!')
 
     io.emit('action', {
       type: 'UPDATE_GAME',

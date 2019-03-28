@@ -14,7 +14,7 @@ type Status = 'pending' | 'started' | 'finished'
         id?: number
 
         @IsString()
-        @Column('text')
+        @Column('text', {default: 'blahblah'})
         name: string
        
         @Column('text', {default: 'pending'})

@@ -1,7 +1,7 @@
 import * as request from 'superagent'
-import { baseUrl } from '../constants'
-import { logout } from './users'
-import { isExpired } from '../jwt'
+import {baseUrl} from '../constants'
+import {logout} from './users'
+import {isExpired} from '../jwt'
 
 export const ADD_GAME = 'ADD_GAME'
 export const UPDATE_GAME = 'UPDATE_GAME'
@@ -30,6 +30,7 @@ const joinGameSuccess = () => ({
 
 export const getGames = () => (dispatch, getState) => {
   const state = getState()
+  console.table('state games', state)
   if (!state.currentUser) return null
   const jwt = state.currentUser.jwt
 
@@ -38,10 +39,7 @@ export const getGames = () => (dispatch, getState) => {
   request
     .get(`${baseUrl}/games`)
     .set('Authorization', `Bearer ${jwt}`)
-    .then(result => {
-      console.log(result.body.games)
-      return dispatch(updateGames(result.body.games))
-    })
+    .then(result => dispatch(updateGames(result.body)))
     .catch(err => console.error(err))
 }
 
@@ -84,3 +82,31 @@ export const updateGame = (gameId, board) => (dispatch, getState) => {
     .then(_ => dispatch(updateGameSuccess()))
     .catch(err => console.error(err))
 }
+
+
+export const apiTest = () => (dispatch, getState) => {
+  const state = getState()
+  const jwt = state.currentUser.jwt
+
+  if (isExpired(jwt)) return dispatch(logout())
+
+  request
+    .get(`${baseUrl}/test`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .then(result => console.log(result, 'here is the result!'))
+    .catch(err => console.error(err))
+}
+
+// export const getGames = () => (dispatch, getState) => {
+//   const state = getState()
+//   if (!state.currentUser) return null
+//   const jwt = state.currentUser.jwt
+
+//   if (isExpired(jwt)) return dispatch(logout())
+
+//   request
+//     .get(`${baseUrl}/games`)
+//     .set('Authorization', `Bearer ${jwt}`)
+//     .then(result => dispatch(updateGames(result.body)))
+//     .catch(err => console.error(err))
+// }

@@ -1,17 +1,16 @@
 import React, {PureComponent} from 'react'
 import {getGames, createGame} from '../../actions/games'
-import {getUsers, hello} from '../../actions/users'
+import {getUsers} from '../../actions/users'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
-import { Card, CardActions, CardContent } from '@material-ui/core'
+import Card, { CardActions, CardContent } from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import './GamesList.css'
 
 class GamesList extends PureComponent {
   componentWillMount() {
-    this.props.hello()
     if (this.props.authenticated) {
       if (this.props.games === null) this.props.getGames()
       if (this.props.users === null) this.props.getUsers()
@@ -21,34 +20,32 @@ class GamesList extends PureComponent {
   renderGame = (game) => {
     const {users, history} = this.props
 
-    return (
-      <Card key={game.id} className="game-card">
-        <CardContent>
-          <Typography color="textSecondary">
-            This game is played by&nbsp;
-            {
-              game.players
-                .map(player => users[player.userId])
-                .join(' and ')
-            }
-          </Typography>
-          <Typography variant="headline" component="h2">
-            Game #{game.id}
-          </Typography>
-          <Typography color="textSecondary">
-            Status: {game.status}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button
-            size="small"
-            onClick={() => history.push(`/games/${game.id}`)}
-          >
-            Watch
-          </Button>
-        </CardActions>
-      </Card>
-    )
+    return (<Card key={game.id} className="game-card">
+      <CardContent>
+        <Typography color="textSecondary">
+          This game is played by&nbsp;
+          {
+            game.players
+              .map(player => users[player.userId].firstName)
+              .join(' and ')
+          }
+        </Typography>
+        <Typography variant="headline" component="h2">
+          Game #{game.id}
+        </Typography>
+        <Typography color="textSecondary">
+          Status: {game.status}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button
+          size="small"
+          onClick={() => history.push(`/games/${game.id}`)}
+        >
+          Watch
+        </Button>
+      </CardActions>
+    </Card>)
   }
 
   render() {
@@ -84,4 +81,4 @@ const mapStateToProps = state => ({
     null : Object.values(state.games).sort((a, b) => b.id - a.id)
 })
 
-export default connect(mapStateToProps, {getGames, getUsers, createGame, hello})(GamesList)
+export default connect(mapStateToProps, {getGames, getUsers, createGame})(GamesList)

@@ -13,7 +13,7 @@ export default class Player extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(() => User, user => user.players)
+  @ManyToOne(() => User, user => user.players, { eager: true })
   // @Column('text')
   user: User
   
