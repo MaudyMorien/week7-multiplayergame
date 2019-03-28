@@ -1,6 +1,6 @@
 import * as request from 'superagent'
-import {baseUrl} from '../constants'
-import {isExpired} from '../jwt'
+import { baseUrl } from '../constants'
+import { isExpired } from '../jwt'
 
 export const ADD_USER = 'ADD_USER'
 export const UPDATE_USER = 'UPDATE_USER'
@@ -43,34 +43,34 @@ const updateUsers = (users) => ({
 })
 
 export const login = (email, password) => (dispatch) =>
-	request
-		.post(`${baseUrl}/logins`)
-    .send({email, password})
+  request
+    .post(`${baseUrl}/logins`)
+    .send({ email, password })
     .then(result => dispatch(userLoginSuccess(result.body)))
     .catch(err => {
-    	if (err.status === 400) {
-    		dispatch(userLoginFailed(err.response.body.message))
-    	}
-    	else {
-    		console.error(err)
-    	}
+      if (err.status === 400) {
+        dispatch(userLoginFailed(err.response.body.message))
+      }
+      else {
+        console.error(err)
+      }
     })
 
 export const signup = (email, password) => (dispatch) =>
-	request
-		.post(`${baseUrl}/users`)
-		.send({ firstName: email, lastName: email, email, password })
-		.then(result => {
-			dispatch(userSignupSuccess())
-		})
-		.catch(err => {
-			if (err.status === 400) {
-				dispatch(userSignupFailed(err.response.body.message))
-			}
-			else {
-				console.error(err)
-			}
-		})
+  request
+    .post(`${baseUrl}/users`)
+    .send({ firstName: email, lastName: email, email, password })
+    .then(result => {
+      dispatch(userSignupSuccess())
+    })
+    .catch(err => {
+      if (err.status === 400) {
+        dispatch(userSignupFailed(err.response.body.message))
+      }
+      else {
+        console.error(err)
+      }
+    })
 
 export const getUsers = () => (dispatch, getState) => {
   const state = getState()
@@ -84,4 +84,20 @@ export const getUsers = () => (dispatch, getState) => {
     .set('Authorization', `Bearer ${jwt}`)
     .then(result => dispatch(updateUsers(result.body)))
     .catch(err => console.error(err))
+}
+
+export const hello = () => (dispatch, getState) => {
+  request
+    .post(`${baseUrl}/answers`)
+    .send({ answer: 'green' })
+    .then(result => {
+    })
+    .catch(err => {
+      if (err.status === 400) {
+        dispatch(userSignupFailed(err.response.body.message))
+      }
+      else {
+        console.error(err)
+      }
+    })
 }

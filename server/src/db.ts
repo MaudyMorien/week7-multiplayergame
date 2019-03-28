@@ -6,7 +6,8 @@ import User from './users/entity'
 import Player from './players/entity';
 import Game from './games/entity'
 import Question from './questions/entity';
-import Answer from './answers/entity';
+import Answer from './answers/entity'
+import Mission from './missions/entity';
 
 class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
 
@@ -36,7 +37,8 @@ export default () =>
       Player,
       Game,
       Question,
-      Answer
+      Answer,
+      Mission
     ],
     synchronize: true, // careful with this in production!
     logging: true,

@@ -15,7 +15,7 @@ const TopBar = (props) => {
     <AppBar position="absolute" style={{zIndex:10}}>
       <Toolbar>
         <Typography variant="title" color="inherit" style={{flex: 1}}>
-          beautiFUN game by Duc and Maudy
+          Multiplayer Tic Tac Toe
         </Typography>
         {
           user &&

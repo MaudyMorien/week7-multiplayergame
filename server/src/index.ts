@@ -11,9 +11,10 @@ import {Server} from 'http'
 import * as IO from 'socket.io'
 import * as socketIoJwtAuth from 'socketio-jwt-auth'
 import {secret} from './jwt'
-import QuestionController from './questions/controller';
-import AnswerController from './answers/controller';
-import PlayerController from './players/controller';
+import QuestionController from './questions/controller'
+import AnswerController from './answers/controller'
+import PlayerController from './players/controller'
+import MissionController from './missions/controller'
 
 const app = new Koa()
 const server = new Server(app.callback())
@@ -28,13 +29,13 @@ useKoaServer(app, {
     GameController,
     QuestionController,
     AnswerController,
-    PlayerController
+    PlayerController,
+    MissionController
   ],
   authorizationChecker: (action: Action) => {
     const header: string = action.request.headers.authorization
     if (header && header.startsWith('Bearer ')) {
       const [ , token ] = header.split(' ')
-
       try {
         return !!(token && verify(token))
       }

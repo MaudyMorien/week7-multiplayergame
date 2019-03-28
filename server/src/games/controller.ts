@@ -1,25 +1,19 @@
-import { 
-  JsonController, Authorized, CurrentUser, Post, Param, BadRequestError, HttpCode, NotFoundError, ForbiddenError, Get, 
-  Body, Patch 
+import {
+  JsonController, CurrentUser, Post, Param, BadRequestError, HttpCode, NotFoundError, ForbiddenError, Get,
+  Body, Patch
 } from 'routing-controllers'
+import Answer from '../answers/entity'
 import User from '../users/entity'
-import { Game, Player, Board } from './entity'
-import {IsBoard, isValidTransition, calculateWinner, finished} from './logic'
-import { Validate } from 'class-validator'
-import {io} from '../index'
-
-class GameUpdate {
-
-  @Validate(IsBoard, {
-    message: 'Not a valid board'
-  })
-  board: Board
-}
+import Game from './entity'
+import Player from '../players/entity'
+import Question from '../questions/entity'
+// import {IsBoard, isValidTransition, calculateWinner, finished} from './logic'
+// import { Validate } from 'class-validator'
+import { io } from '../index'
 
 @JsonController()
 export default class GameController {
 
-  @Authorized()
   @Post('/games')
   @HttpCode(201)
   async createGame(
@@ -27,13 +21,22 @@ export default class GameController {
   ) {
     const entity = await Game.create().save()
 
-    await Player.create({
-      game: entity, 
-      user,
-      symbol: 'x'
-    }).save()
+    const player = await Player.create({
+      game: entity,
+      user
+    })
+    await player.save()
 
     const game = await Game.findOneById(entity.id)
+
+    if (game) {
+      const question_id = Math.ceil(Math.random() * 5)
+      const question = await Question.findOneById(question_id)
+      if (question) {
+        game.question = question
+        game.save()
+      }
+    }
 
     io.emit('action', {
       type: 'ADD_GAME',
@@ -43,7 +46,6 @@ export default class GameController {
     return game
   }
 
-  @Authorized()
   @Post('/games/:id([0-9]+)/players')
   @HttpCode(201)
   async joinGame(
@@ -54,14 +56,13 @@ export default class GameController {
     if (!game) throw new BadRequestError(`Game does not exist`)
     if (game.status !== 'pending') throw new BadRequestError(`Game is already started`)
 
-    game.status = 'started'
     await game.save()
 
     const player = await Player.create({
-      game, 
-      user,
-      symbol: 'o'
-    }).save()
+      game,
+      user
+    })
+    await player.save()
 
     io.emit('action', {
       type: 'UPDATE_GAME',
@@ -71,42 +72,49 @@ export default class GameController {
     return player
   }
 
-  @Authorized()
-  // the reason that we're using patch here is because this request is not idempotent
-  // http://restcookbook.com/HTTP%20Methods/idempotency/
-  // try to fire the same requests twice, see what happens
+
   @Patch('/games/:id([0-9]+)')
   async updateGame(
     @CurrentUser() user: User,
     @Param('id') gameId: number,
-    @Body() update: GameUpdate
+    @Body() update // { status: 'started' }
   ) {
+    console.log('update test:', update)
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
 
     const player = await Player.findOne({ user, game })
-
     if (!player) throw new ForbiddenError(`You are not part of this game`)
-    if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
-    if (player.symbol !== game.turn) throw new BadRequestError(`It's not your turn`)
-    if (!isValidTransition(player.symbol, game.board, update.board)) {
-      throw new BadRequestError(`Invalid move`)
-    }    
 
-    const winner = calculateWinner(update.board)
-    if (winner) {
-      game.winner = winner
-      game.status = 'finished'
+
+    if (game.status === 'pending') {
+      game.status = 'started'
+      await game.save()
+    } else {
+      // Is this their first answer?
+      await Answer
+        .create({
+          game,
+          player,
+          question: game.question,
+          answer: update.answer
+        })
+        .save()
+
+      const answers = await Answer.find({ game })
+      const players = await Player.find({ game })
+
+      if (answers.length === players.length) {
+        // How do we pick the winner?
+        console.log('someone won!')
+      } else if (answers.length < players.length) {
+        console.log('still waiting for more answers')
+      } else {
+        // What should we do if this happens?
+        console.log('too many answers!')
+      }
     }
-    else if (finished(update.board)) {
-      game.status = 'finished'
-    }
-    else {
-      game.turn = player.symbol === 'x' ? 'o' : 'x'
-    }
-    game.board = update.board
-    await game.save()
-    
+
     io.emit('action', {
       type: 'UPDATE_GAME',
       payload: game
@@ -115,7 +123,6 @@ export default class GameController {
     return game
   }
 
-  @Authorized()
   @Get('/games/:id([0-9]+)')
   getGame(
     @Param('id') id: number
@@ -123,13 +130,12 @@ export default class GameController {
     return Game.findOneById(id)
   }
 
-  @Authorized()
   @Get('/games')
-  getGames() {
-    return Game.find()
+  async getGames() {
+    const games: Game[] = await Game.find()
+    return { games }
   }
 
-  @Authorized()
   @Get('/test')
   sayHello() {
     return { hi: 'from server' }

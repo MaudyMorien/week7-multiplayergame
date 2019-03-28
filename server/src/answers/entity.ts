@@ -1,22 +1,26 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import User from '../users/entity'
+import Player from '../players/entity'
 import Question from '../questions/entity'
-import { IsBoolean } from 'class-validator'
+import Game from '../games/entity'
 
+// Maybe an index here?
 @Entity()
 export default class Answer extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
 
-  @IsBoolean()
   @Column('text')
-  answer: boolean
-  
-  @ManyToOne(() => User, user => user.id)
+  answer: string
+    
+  @ManyToOne(() => Game, game => game.answers)
   // @Column('text')
-  user: User
+  game: Game
+
+  @ManyToOne(() => Player, player => player.id)
+  // @Column('text')
+  player: Player
 
   @ManyToOne(() => Question, question => question.id)
   // @Column('text')

@@ -9,7 +9,7 @@ export default class AnswerController {
   getAnswer(
     @Param('id') id: number
   ) {
-    return Answer.findOne(id)
+    return Answer.findOneById(id)
   }
 
   @Get('/answers')

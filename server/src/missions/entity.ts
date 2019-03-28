@@ -1,22 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
 import { IsString } from 'class-validator'
+import Player from '../players/entity'
 
 @Entity()
-export default class Question extends BaseEntity {
+export default class Mission extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
 
   @IsString()
   @Column('text')
-  question: string
-
-  @IsString()
-  @Column('text')
-  answerA: string
+  mission: string
   
-  @IsString()
-  @Column('text')
-  answerB: string
+  @ManyToOne(() => Player, player => player.id)
+  Player: Player
+
 }

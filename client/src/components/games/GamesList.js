@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import {getGames, createGame} from '../../actions/games'
-import {getUsers} from '../../actions/users'
+import {getUsers, hello} from '../../actions/users'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
@@ -10,15 +10,15 @@ import Typography from '@material-ui/core/Typography'
 import './GamesList.css'
 
 class GamesList extends PureComponent {
-  // componentWillMount() {
-  //   if (this.props.authenticated) {
-  //     if (this.props.games === null) this.props.getGames()
-  //     if (this.props.users === null) this.props.getUsers()
-  //   }
-  // }
+  componentWillMount() {
+    this.props.hello()
+    if (this.props.authenticated) {
+      if (this.props.games === null) this.props.getGames()
+      if (this.props.users === null) this.props.getUsers()
+    }
+  }
 
   renderGame = (game) => {
-    console.log(this.props, 'props')
     const {users, history} = this.props
 
     return (
@@ -28,7 +28,7 @@ class GamesList extends PureComponent {
             This game is played by&nbsp;
             {
               game.players
-                .map(player => users[player.userId].firstName)
+                .map(player => users[player.userId])
                 .join(' and ')
             }
           </Typography>
@@ -52,14 +52,13 @@ class GamesList extends PureComponent {
   }
 
   render() {
-    console.log(this.props, 'props')
     const {games, users, authenticated, createGame} = this.props
 
-    // if (!authenticated) return (
-		// 	<Redirect to="/login" />
-		// )
+    if (!authenticated) return (
+			<Redirect to="/login" />
+		)
 
-    // if (games === null || users === null) return null
+    if (games === null || users === null) return null
 
     return (<Paper className="outer-paper">
       <Button
@@ -79,10 +78,10 @@ class GamesList extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  // authenticated: state.currentUser !== null,
+  authenticated: state.currentUser !== null,
   users: state.users === null ? null : state.users,
   games: state.games === null ?
     null : Object.values(state.games).sort((a, b) => b.id - a.id)
 })
 
-export default connect(mapStateToProps, {getGames, getUsers, createGame})(GamesList)
+export default connect(mapStateToProps, {getGames, getUsers, createGame, hello})(GamesList)
