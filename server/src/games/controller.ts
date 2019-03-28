@@ -1,13 +1,15 @@
-import { 
-  JsonController, Authorized, CurrentUser, Post, Param, BadRequestError, HttpCode, NotFoundError, ForbiddenError, Get, 
-  Body, Patch 
+import {
+  JsonController, CurrentUser, Post, Param, BadRequestError, HttpCode, NotFoundError, ForbiddenError, Get,
+  Body, Patch
 } from 'routing-controllers'
+import Answer from '../answers/entity'
 import User from '../users/entity'
-import  Game from './entity'
+import Game from './entity'
 import Player from '../players/entity'
+import Question from '../questions/entity'
 // import {IsBoard, isValidTransition, calculateWinner, finished} from './logic'
 // import { Validate } from 'class-validator'
-import {io} from '../index'
+import { io } from '../index'
 
 @JsonController()
 export default class GameController {
@@ -17,24 +19,24 @@ export default class GameController {
   async createGame(
     @CurrentUser() user: User
   ) {
-    console.log('\nCREATE GAME')
     const entity = await Game.create().save()
-    console.log('entity test:', entity)
 
     const player = await Player.create({
-      game: entity, 
+      game: entity,
       user
     })
-
-    console.log('player test:', player)
-    
     await player.save()
-
-    console.log('after test:', player)
 
     const game = await Game.findOneById(entity.id)
 
-    console.log('game test:', game) 
+    if (game) {
+      const question_id = Math.ceil(Math.random() * 5)
+      const question = await Question.findOneById(question_id)
+      if (question) {
+        game.question = question
+        game.save()
+      }
+    }
 
     io.emit('action', {
       type: 'ADD_GAME',
@@ -70,87 +72,49 @@ export default class GameController {
     return player
   }
 
-  // the reason that we're using patch here is because this request is not idempotent
-  // http://restcookbook.com/HTTP%20Methods/idempotency/
-  // try to fire the same requests twice, see what happens
-  @Post('/games/:id([0-9]+)')
+
+  @Patch('/games/:id([0-9]+)')
   async updateGame(
     @CurrentUser() user: User,
     @Param('id') gameId: number,
     @Body() update // { status: 'started' }
   ) {
+    console.log('update test:', update)
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
 
     const player = await Player.findOne({ user, game })
-
     if (!player) throw new ForbiddenError(`You are not part of this game`)
 
-    const isPlayerTheHost = true
 
-    const isStatusPending = game.status === 'pending'
-
-    const isAllowedToChange = isStatusPending ? isPlayerTheHost : true
-    
-    if (isAllowedToChange) {
-      const updateKeys = Object.keys(update) // ['status']
-
-      updateKeys
-        .map(updateKey => // 'status'
-          {
-            game[updateKey] = update[updateKey]
-          }
-        )
-
+    if (game.status === 'pending') {
+      game.status = 'started'
       await game.save()
     } else {
-      throw new BadRequestError(`It's not your turn`)
+      // Is this their first answer?
+      await Answer
+        .create({
+          game,
+          player,
+          question: game.question,
+          answer: update.answer
+        })
+        .save()
+
+      const answers = await Answer.find({ game })
+      const players = await Player.find({ game })
+
+      if (answers.length === players.length) {
+        // How do we pick the winner?
+        console.log('someone won!')
+      } else if (answers.length < players.length) {
+        console.log('still waiting for more answers')
+      } else {
+        // What should we do if this happens?
+        console.log('too many answers!')
+      }
     }
-    
-    // if (player.symbol !== game.turn) 
-    // if (!isValidTransition(player.symbol, game.board, update.board)) {
-    //   throw new BadRequestError(`Invalid move`)
-    // }    
-    
-    io.emit('action', {
-      type: 'UPDATE_GAME',
-      payload: game
-    })
 
-    return game
-  }
-
-  @Post('/games/:id([0-9]+)/start')
-  async startGame(
-    @CurrentUser() user: User,
-    @Param('id') gameId: number
-  ) {
-    const game = await Game.findOneById(gameId)
-    if (!game) throw new NotFoundError(`Game does not exist`)
-
-    const player = await Player.findOne({ user, game })
-
-    if (!player) throw new ForbiddenError(`You are not part of this game`)
-    if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
-    // if (player.symbol !== game.turn) throw new BadRequestError(`It's not your turn`)
-    // if (!isValidTransition(player.symbol, game.board, update.board)) {
-    //   throw new BadRequestError(`Invalid move`)
-    // }    
-
-    // const winner = calculateWinner(update.board)
-    // if (winner) {
-    //   game.winner = winner
-    //   game.status = 'finished'
-    // }
-    // else if (finished(update.board)) {
-    //   game.status = 'finished'
-    // }
-    // else {
-    //   game.turn = player.symbol === 'x' ? 'o' : 'x'
-    // }
-    // game.board = update.board
-    // await game.save()
-    
     io.emit('action', {
       type: 'UPDATE_GAME',
       payload: game

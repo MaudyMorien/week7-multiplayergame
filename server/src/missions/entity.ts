@@ -14,7 +14,6 @@ export default class Mission extends BaseEntity {
   mission: string
   
   @ManyToOne(() => Player, player => player.id)
-  // @Column('text')
   Player: Player
 
 }

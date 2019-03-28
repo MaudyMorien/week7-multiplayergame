@@ -2,20 +2,19 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
 import Player from '../players/entity'
 import Question from '../questions/entity'
-import { IsNumber } from 'class-validator'
 import Game from '../games/entity'
 
+// Maybe an index here?
 @Entity()
 export default class Answer extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
 
-  @IsNumber()
   @Column('text')
-  answer: number
+  answer: string
     
-  @ManyToOne(() => Game, game => game.id)
+  @ManyToOne(() => Game, game => game.answers)
   // @Column('text')
   game: Game
 

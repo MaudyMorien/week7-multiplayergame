@@ -39,7 +39,6 @@ export const getGames = () => (dispatch, getState) => {
     .get(`${baseUrl}/games`)
     .set('Authorization', `Bearer ${jwt}`)
     .then(result => {
-      console.log(result.body.games)
       return dispatch(updateGames(result.body.games))
     })
     .catch(err => console.error(err))
@@ -65,7 +64,7 @@ export const startGame = (gameId) => (dispatch, getState) => {
   if (isExpired(jwt)) return dispatch(logout())
 
   request
-    .post(`${baseUrl}/games/${gameId}/start`)
+    .post(`${baseUrl}/games/${gameId}`)
     .set('Authorization', `Bearer ${jwt}`)
     .catch(err => console.error(err))
 }
@@ -83,7 +82,7 @@ export const createGame = () => (dispatch, getState) => {
     .catch(err => console.error(err))
 }
 
-export const updateGame = (gameId, board) => (dispatch, getState) => {
+export const updateGame = (gameId, update) => (dispatch, getState) => {
   const state = getState()
   const jwt = state.currentUser.jwt
 
@@ -92,7 +91,7 @@ export const updateGame = (gameId, board) => (dispatch, getState) => {
   request
     .patch(`${baseUrl}/games/${gameId}`)
     .set('Authorization', `Bearer ${jwt}`)
-    .send({ board })
+    .send(update)
     .then(_ => dispatch(updateGameSuccess()))
     .catch(err => console.error(err))
 }

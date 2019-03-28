@@ -25,17 +25,12 @@ class GameDetails extends PureComponent {
     updateGame(game.id, { status: 'started' })
   }
 
-  makeMove = (toRow, toCell) => {
+  submitAnswer = answer => {
     const { game, updateGame } = this.props
 
-    const board = game.board.map(
-      (row, rowIndex) => row.map((cell, cellIndex) => {
-        if (rowIndex === toRow && cellIndex === toCell) return game.turn
-        else return cell
-      })
-    )
-    updateGame(game.id, board)
+    updateGame(game.id, { answer })
   }
+
 
   render() {
     const { game, users, authenticated, userId } = this.props
@@ -46,19 +41,23 @@ class GameDetails extends PureComponent {
     if (game === null || users === null) return 'Loading...'
     if (!game) return 'Not found'
 
-
     const player = game.players.find(p => p.userId)
-    const playersWaiting = Object.values(game.players).map(user => <div>{user.user.email}</div>)
+    const playersWaiting = Object
+      .values(game.players)
+      .map(user => <div key={user.user.email}>
+        {user.user.email}
+      </div>)
 
     const winner = game.players
       .filter(p => p.symbol === game.winner)
       .map(p => p.userId)[0]
 
+
     return (<Paper className="outer-paper">
       <h1>Game #{game.id}</h1>
 
       <p>Status: {game.status}</p>
-      <h3>Players waiting: {playersWaiting}</h3>
+      <h3>{playersWaiting}</h3>
       {
         game.status === 'started' &&
         player && player.symbol === game.turn &&
@@ -83,6 +82,15 @@ class GameDetails extends PureComponent {
           .map(p => p.user.id)
           .indexOf(userId) === -1 &&
         <button onClick={this.joinGame}>Join Game</button>
+      }
+
+      {
+        game.status === 'started' &&
+        <div>{game.question.question}
+          <button onClick={() => this.submitAnswer('answerA')}>{game.question.answerA}</button>
+          <button onClick={() => this.submitAnswer('answerB')}>{game.question.answerB}</button>
+
+        </div>
       }
 
       {

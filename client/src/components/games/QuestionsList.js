@@ -111,9 +111,6 @@ class QuestionsList extends PureComponent {
 render() {
 
     const randomQuestionIndex = Math.floor(Math.random() * qAs.length)
-    console.log(randomQuestionIndex, 'randomQuestionIndex')
-
-    console.log('props', this.props)
     const {games, users, authenticated, createGame} = this.props
 
     // if (!authenticated) return (
