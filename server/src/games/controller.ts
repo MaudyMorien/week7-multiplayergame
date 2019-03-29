@@ -81,7 +81,6 @@ export default class GameController {
     @Param('id') gameId: number,
     @Body() update // { status: 'started' }
   ) {
-    console.log('update test:', update)
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
 
@@ -106,35 +105,38 @@ export default class GameController {
       const answers = await Answer.find({ game })
       const players = await Player.find({ game })
 
-      if (answers.length === players.length) {
-        console.log('all answers are submitted')
+      const gameWithAnswers = await Game.findOneById(gameId)
 
-        // function filterAnswers(answers) {
-        //   if(id in answers)
-        // }
-        // const countA = {}
-        // answers.forEach(function (val) { val['answerA'] = (val['answerA'] || 0) + 1 })
-        // console.log('count von Count A', countA)
-        // const countB = {}
-        // answers.forEach(function () { countB['answerB'] = (countB['AnswerB'] || 0) + 1 })
-        // console.log('count von Count B', countB)
-        // if (countA.length > countB.length) {
-        //   return 'answer A has the most votes'
-        // } else if (countA.length < countB.length) {
-        //   return 'answer B has the most votes'
-        // } else {
-        //   return 'the votes are equal'
-        // }
+      if (gameWithAnswers) {
+        if (answers.length === players.length) {
+          const answerArray = answers.map(item => item.answer) // [answerA, answerB]
+          
+          let countAnswerA = answerArray
+            .filter(value => value === 'answerA')
+            .length
+          
+          let countAnswerB = answerArray
+          .filter(value => value === 'answerB')
+          .length
+          
+          if (countAnswerA < countAnswerB) {
+            console.log('more votes for A')
+          } else if (countAnswerA = countAnswerB) {
+            console.log('equal votes for both A and B')
+          } else {
+            console.log('more votes for B')
+          }
 
-      } else if (answers.length < players.length) {
-        console.log('still waiting for more answers')
-      } else {
-        // What should we do if this happens?
-        console.log('too many answers!')
+        } else if (answers.length < players.length) {
+          console.log('still waiting for more answers')
+        } else {
+          // What should we do if this happens?
+          console.log('too many answers!')
+        }
       }
     }
+      
     const newGame = await Game.findOneById(gameId)
-    console.log('payload', newGame)
     io.emit('action', {
       type: 'UPDATE_GAME',
       payload: newGame

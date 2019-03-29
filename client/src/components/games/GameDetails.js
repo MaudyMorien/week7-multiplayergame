@@ -57,7 +57,7 @@ class GameDetails extends PureComponent {
       <h1>Game #{game.id}</h1>
 
       <p>Status: {game.status}</p>
-      <h3>{playersWaiting}</h3>
+      <h3>Players: {playersWaiting}</h3>
       {
         game.status === 'started' &&
         player && player.symbol === game.turn &&
@@ -86,10 +86,11 @@ class GameDetails extends PureComponent {
 
       {
         game.status === 'started' &&
-        <div>{game.question.question}
+        <div>
+          {game.question.question}
+          <br />
           <button onClick={() => this.submitAnswer('answerA')}>{game.question.answerA}</button>
           <button onClick={() => this.submitAnswer('answerB')}>{game.question.answerB}</button>
-
         </div>
       }
 
