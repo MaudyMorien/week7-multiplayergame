@@ -32,7 +32,7 @@ export default class GameController {
     console.log('createGame game test:', game)
 
     if (game) {
-      const question_id = Math.ceil(Math.random() * 5)
+      const question_id = Math.ceil(Math.random() * 9)
       const question = await Question.findOneById(question_id)
       if (question) {
         game.question = question
