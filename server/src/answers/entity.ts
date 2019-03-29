@@ -23,6 +23,7 @@ export default class Answer extends BaseEntity {
   // @Column('text')
   player: Player
 
+
   @ManyToOne(() => Question, question => question.id)
   // @Column('text')
   question: Question

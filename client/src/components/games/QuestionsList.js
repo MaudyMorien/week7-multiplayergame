@@ -1,7 +1,11 @@
 // Copy from GamesList
 
 import React, {PureComponent} from 'react'
+<<<<<<< HEAD
 import {getGames, createGame } from '../../actions/games'
+=======
+import {getGames, createGame, apiTest} from '../../actions/games'
+>>>>>>> 9cb9e833276b072ce095c7945f3a318d882047cc
 import {getUsers} from '../../actions/users'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
@@ -11,6 +15,10 @@ import { Card, CardActions, CardContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import './GamesList.css'
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
+=======
+import Landing from './LandingPage';
+>>>>>>> 9cb9e833276b072ce095c7945f3a318d882047cc
 
 const qAs = [
     {
@@ -27,6 +35,10 @@ const qAs = [
 
 class QuestionsList extends PureComponent {
   componentDidMount() {
+<<<<<<< HEAD
+=======
+    this.props.apiTest()
+>>>>>>> 9cb9e833276b072ce095c7945f3a318d882047cc
     
     // if (this.props.authenticated) {
     //   if (this.props.games === null) this.props.getGames()
@@ -140,4 +152,8 @@ const mapStateToProps = state => ({
     null : Object.values(state.games).sort((a, b) => b.id - a.id)
 })
 
+<<<<<<< HEAD
 export default connect(mapStateToProps, {getGames, getUsers, createGame })(QuestionsList)
+=======
+export default connect(mapStateToProps, {getGames, getUsers, createGame, apiTest})(QuestionsList)
+>>>>>>> 9cb9e833276b072ce095c7945f3a318d882047cc

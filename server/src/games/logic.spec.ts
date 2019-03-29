@@ -1,7 +1,7 @@
 // import 'mocha'
 // import { equal } from 'assert'
 // import { calculateWinner, isValidTransition, finished } from './logic'
-// import { Board } from './entities'
+// import { Board } from './entity'
 
 // describe('calculateWinner()', () => {
 

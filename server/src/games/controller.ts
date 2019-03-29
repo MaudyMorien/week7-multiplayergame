@@ -1,6 +1,6 @@
 import {
   JsonController, CurrentUser, Post, Param, BadRequestError, HttpCode, NotFoundError, ForbiddenError, Get,
-  Body, Patch
+  Body, Patch, Authorized
 } from 'routing-controllers'
 import Answer from '../answers/entity'
 import User from '../users/entity'
@@ -11,9 +11,11 @@ import Question from '../questions/entity'
 // import { Validate } from 'class-validator'
 import { io } from '../index'
 
+
 @JsonController()
 export default class GameController {
 
+@Authorized()
   @Post('/games')
   @HttpCode(201)
   async createGame(
@@ -108,19 +110,19 @@ export default class GameController {
         console.log('all answers are submitted')
 
       
-        const countA = {}
-        answers.forEach(function (val) { val['answerA'] = (val['answerA'] || 0) + 1 })
-        console.log('count von Count A', countA)
-        const countB = {}
-        answers.forEach(function () { countB['answerB'] = (countB['AnswerB'] || 0) + 1 })
-        console.log('count von Count B', countB)
-        if (countA.length > countB.length) {
-          return 'answer A has the most votes'
-        } else if (countA.length < countB.length) {
-          return 'answer B has the most votes'
-        } else {
-          return 'the votes are equal'
-        }
+        // const countA = {}
+        // answers.forEach(function (val) { val['answerA'] = (val['answerA'] || 0) + 1 })
+        // console.log('count von Count A', countA)
+        // const countB = {}
+        // answers.forEach(function () { countB['answerB'] = (countB['AnswerB'] || 0) + 1 })
+        // console.log('count von Count B', countB)
+        // if (countA.length > countB.length) {
+        //   return 'answer A has the most votes'
+        // } else if (countA.length < countB.length) {
+        //   return 'answer B has the most votes'
+        // } else {
+        //   return 'the votes are equal'
+        // }
 
       } else if (answers.length < players.length) {
         console.log('still waiting for more answers')
@@ -138,6 +140,7 @@ export default class GameController {
     return game
   }
 
+  @Authorized()
   @Get('/games/:id([0-9]+)')
   getGame(
     @Param('id') id: number
@@ -145,20 +148,10 @@ export default class GameController {
     return Game.findOneById(id)
   }
 
+  @Authorized()
   @Get('/games')
   async getGames() {
     const games: Game[] = await Game.find()
     return { games }
   }
-
-  @Get('/test')
-  sayHello() {
-    return { hi: 'from server' }
-  }
-
-  @Get('/')
-  iExists() {
-    return { hi: 'from server' }
-  }
 }
-

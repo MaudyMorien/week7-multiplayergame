@@ -9,6 +9,7 @@ import Question from './questions/entity';
 import Answer from './answers/entity'
 import Mission from './missions/entity';
 
+
 class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
 
   tableName(targetName: string, userSpecifiedName: string): string {
@@ -39,6 +40,7 @@ export default () =>
       Question,
       Answer,
       Mission
+
     ],
     synchronize: true, // careful with this in production!
     logging: true,

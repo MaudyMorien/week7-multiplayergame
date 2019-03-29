@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography'
 import './GamesList.css'
 
 class GamesList extends PureComponent {
+<<<<<<< HEAD
   componentWillMount() {
     this.props.hello()
     if (this.props.authenticated) {
@@ -17,6 +18,14 @@ class GamesList extends PureComponent {
       if (this.props.users === null) this.props.getUsers()
     }
   }
+=======
+  // componentWillMount() {
+  //   if (this.props.authenticated) {
+  //     if (this.props.games === null) this.props.getGames()
+  //     if (this.props.users === null) this.props.getUsers()
+  //   }
+  // }
+>>>>>>> 9cb9e833276b072ce095c7945f3a318d882047cc
 
   renderGame = (game) => {
     const {users, history} = this.props
@@ -54,11 +63,11 @@ class GamesList extends PureComponent {
   render() {
     const {games, users, authenticated, createGame} = this.props
 
-    if (!authenticated) return (
-			<Redirect to="/login" />
-		)
+    // if (!authenticated) return (
+		// 	<Redirect to="/login" />
+		// )
 
-    if (games === null || users === null) return null
+    // if (games === null || users === null) return null
 
     return (<Paper className="outer-paper">
       <Button
@@ -78,7 +87,7 @@ class GamesList extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  authenticated: state.currentUser !== null,
+  // authenticated: state.currentUser !== null,
   users: state.users === null ? null : state.users,
   games: state.games === null ?
     null : Object.values(state.games).sort((a, b) => b.id - a.id)
