@@ -34,7 +34,7 @@ class GameDetails extends PureComponent {
 
   render() {
     const { game, users, authenticated, userId } = this.props
-
+    console.log(this.props, 'props')
     if (!authenticated) return (
       <Redirect to="/login" />
     )
@@ -85,8 +85,13 @@ class GameDetails extends PureComponent {
       }
 
       {
-        game.status === 'started' &&
-        <div>{game.question.question}
+        game.status === 'started'
+        
+        && game.answers.length <= game.players.length
+                
+        &&
+        <div>
+          {game.question.question}
           <button onClick={() => this.submitAnswer('answerA')}>{game.question.answerA}</button>
           <button onClick={() => this.submitAnswer('answerB')}>{game.question.answerB}</button>
 
