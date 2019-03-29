@@ -109,17 +109,3 @@ export const apiTest = () => (dispatch, getState) => {
     .then(result => console.log(result, 'here is the result!'))
     .catch(err => console.error(err))
 }
-
-// export const getGames = () => (dispatch, getState) => {
-//   const state = getState()
-//   if (!state.currentUser) return null
-//   const jwt = state.currentUser.jwt
-
-//   if (isExpired(jwt)) return dispatch(logout())
-
-//   request
-//     .get(`${baseUrl}/games`)
-//     .set('Authorization', `Bearer ${jwt}`)
-//     .then(result => dispatch(updateGames(result.body)))
-//     .catch(err => console.error(err))
-// }

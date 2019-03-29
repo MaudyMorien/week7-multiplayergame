@@ -85,19 +85,3 @@ export const getUsers = () => (dispatch, getState) => {
     .then(result => dispatch(updateUsers(result.body)))
     .catch(err => console.error(err))
 }
-
-// export const hello = () => (dispatch, getState) => {
-//   request
-//     .post(`${baseUrl}/answers`)
-//     .send({ answer: 'green' })
-//     .then(result => {
-//     })
-//     .catch(err => {
-//       if (err.status === 400) {
-//         dispatch(userSignupFailed(err.response.body.message))
-//       }
-//       else {
-//         console.error(err)
-//       }
-//     })
-// }

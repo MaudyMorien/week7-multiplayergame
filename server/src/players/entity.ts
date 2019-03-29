@@ -14,11 +14,9 @@ export default class Player extends BaseEntity {
   id?: number
 
   @ManyToOne(() => User, user => user.players, { eager: true })
-  // @Column('text')
   user: User
   
   @ManyToOne(() => Game, game => game.players)
-  // @Column('text')
   game: Game
 
   @IsNumber()

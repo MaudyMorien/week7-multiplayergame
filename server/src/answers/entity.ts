@@ -4,7 +4,6 @@ import Player from '../players/entity'
 import Question from '../questions/entity'
 import Game from '../games/entity'
 
-// Maybe an index here?
 @Entity()
 @Index(['player', 'question'], {unique:true})
 export default class Answer extends BaseEntity {
@@ -16,16 +15,12 @@ export default class Answer extends BaseEntity {
   answer: string
     
   @ManyToOne(() => Game, game => game.answers)
-  // @Column('text')
   game: Game
 
   @ManyToOne(() => Player, player => player.id)
-  // @Column('text')
   player: Player
 
-
   @ManyToOne(() => Question, question => question.id)
-  // @Column('text')
   question: Question
 
 }

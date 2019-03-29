@@ -7,8 +7,6 @@ import User from '../users/entity'
 import Game from './entity'
 import Player from '../players/entity'
 import Question from '../questions/entity'
-// import {IsBoard, isValidTransition, calculateWinner, finished} from './logic'
-// import { Validate } from 'class-validator'
 import { io } from '../index'
 
 
@@ -22,6 +20,7 @@ export default class GameController {
     @CurrentUser() user: User
   ) {
     const entity = await Game.create().save()
+    console.log('entity test:', entity)
 
     const player = await Player.create({
       game: entity,
@@ -30,6 +29,7 @@ export default class GameController {
     await player.save()
 
     const game = await Game.findOneById(entity.id)
+    console.log('createGame game test:', game)
 
     if (game) {
       const question_id = Math.ceil(Math.random() * 5)
@@ -40,12 +40,16 @@ export default class GameController {
       }
     }
 
+    const newGame = await Game.findOneById(entity.id)
+
+    console.log('createGame newGame test:', newGame)
+
     io.emit('action', {
       type: 'ADD_GAME',
-      payload: game
+      payload: newGame
     })
 
-    return game
+    return newGame
   }
 
   @Post('/games/:id([0-9]+)/players')
@@ -92,7 +96,6 @@ export default class GameController {
       game.status = 'started'
       await game.save()
     } else {
-      // Is this their first answer?
       await Answer
         .create({
           game,
@@ -107,42 +110,47 @@ export default class GameController {
 
       const gameWithAnswers = await Game.findOneById(gameId)
 
+      console.log('gameWithAnswers test:', gameWithAnswers)
       if (gameWithAnswers) {
         if (answers.length === players.length) {
-          const answerArray = answers.map(item => item.answer) // [answerA, answerB]
+          const answerArray = answers.map(item => item.answer)
           
           let countAnswerA = answerArray
             .filter(value => value === 'answerA')
             .length
           
           let countAnswerB = answerArray
-          .filter(value => value === 'answerB')
-          .length
-          
-          if (countAnswerA < countAnswerB) {
-            console.log('more votes for A')
-          } else if (countAnswerA = countAnswerB) {
-            console.log('equal votes for both A and B')
+            .filter(value => value === 'answerB')
+            .length
+
+          const comparison = countAnswerA > countAnswerB
+          console.log('answers', answers)
+          if (comparison) {
+            game.result = `More people picked '${game.question.answerA}'. Play more? Press 'ALL GAMES' at the top right corner`
+          } else if (countAnswerA === countAnswerB) {
+            game.result = `It\'s a tie. Play more? Press 'ALL GAMES' at the top right corner`
           } else {
-            console.log('more votes for B')
+            game.result = `more people picked '${game.question.answerB}'. Play more? Press 'ALL GAMES' at the top right corner`
           }
+          
+          await game.save()
 
         } else if (answers.length < players.length) {
-          console.log('still waiting for more answers')
+          // some logic for future reference
         } else {
-          // What should we do if this happens?
-          console.log('too many answers!')
+          // some logic for future reference
         }
       }
     }
       
-    const newGame = await Game.findOneById(gameId)
+    const newGame1 = await Game.findOneById(gameId)
+    console.log('newGame1', newGame1)
     io.emit('action', {
       type: 'UPDATE_GAME',
-      payload: newGame
+      payload: newGame1
     })
 
-    return newGame
+    return newGame1
   }
 
   @Authorized()

@@ -15,7 +15,6 @@ export default class Question extends BaseEntity {
   question: string
   
   @ManyToOne(() => Game, game => game.id)
-  // @Column('text')
   game: Game
 
   @IsString()

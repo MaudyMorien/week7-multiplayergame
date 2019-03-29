@@ -89,8 +89,8 @@ class GameDetails extends PureComponent {
         <div>
           {game.question.question}
           <br />
-          <button onClick={() => this.submitAnswer('answerA')}>{game.question.answerA}</button>
-          <button onClick={() => this.submitAnswer('answerB')}>{game.question.answerB}</button>
+          <button onClick={() => this.submitAnswer('answerA')}> {game.question.answerA} </button>
+          <button onClick={() => this.submitAnswer('answerB')}> {game.question.answerB} </button>
         </div>
       }
 
@@ -106,6 +106,8 @@ class GameDetails extends PureComponent {
         game.status !== 'pending' &&
         <Board board={game.board} makeMove={this.makeMove} />
       }
+
+      { game.result && <div>{game.result}</div>}
     </Paper>)
   }
 }

@@ -11,7 +11,6 @@ import './GamesList.css'
 
 class GamesList extends PureComponent {
   componentWillMount() {
-    // this.props.hello()
     if (this.props.authenticated) {
       if (this.props.games === null) this.props.getGames()
       if (this.props.users === null) this.props.getUsers()
