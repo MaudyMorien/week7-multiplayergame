@@ -109,7 +109,9 @@ export default class GameController {
       if (answers.length === players.length) {
         console.log('all answers are submitted')
 
-      
+        // function filterAnswers(answers) {
+        //   if(id in answers)
+        // }
         // const countA = {}
         // answers.forEach(function (val) { val['answerA'] = (val['answerA'] || 0) + 1 })
         // console.log('count von Count A', countA)
@@ -131,13 +133,14 @@ export default class GameController {
         console.log('too many answers!')
       }
     }
-    console.log('payload', game)
+    const newGame = await Game.findOneById(gameId)
+    console.log('payload', newGame)
     io.emit('action', {
       type: 'UPDATE_GAME',
-      payload: game
+      payload: newGame
     })
 
-    return game
+    return newGame
   }
 
   @Authorized()

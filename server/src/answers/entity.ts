@@ -4,9 +4,8 @@ import Player from '../players/entity'
 import Question from '../questions/entity'
 import Game from '../games/entity'
 
-// Maybe an index here?
 @Entity()
-// @Index(['player', 'question'], {unique:true})
+@Index(['player', 'question'], {unique:true})
 export default class Answer extends BaseEntity {
 
   @PrimaryGeneratedColumn()
