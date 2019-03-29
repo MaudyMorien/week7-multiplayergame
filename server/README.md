@@ -1,0 +1,1 @@
+Simple voting game by Duc and Maudy
