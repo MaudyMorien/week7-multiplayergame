@@ -10,8 +10,8 @@ export type Board = [Row, Row, Row]
 
 type Status = 'pending' | 'started' | 'finished'
 
-const emptyRow: Row = [null, null, null]
-const emptyBoard: Board = [ emptyRow, emptyRow, emptyRow ]
+// const emptyRow: Row = [null, null, null]
+// const emptyBoard: Board = [ emptyRow, emptyRow, emptyRow ]
 
 @Entity()
 
@@ -29,7 +29,7 @@ export default class Game extends BaseEntity {
     @OneToMany(_ => Player, player => player.game, { eager: true })
     players: Player[]
 
-    @OneToOne(type => Question, { eager: true })
+    @OneToOne(_ => Question, { eager: true })
     @JoinColumn()
     question: Question 
 
