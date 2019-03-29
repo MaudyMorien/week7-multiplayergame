@@ -6,13 +6,13 @@ import Game from '../games/entity'
 
 // Maybe an index here?
 @Entity()
-@Index(['player', 'question'], {unique:true})
+// @Index(['player', 'question'], {unique:true})
 export default class Answer extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column('text')
+  @Column('text') 
   answer: string
     
   @ManyToOne(() => Game, game => game.answers)

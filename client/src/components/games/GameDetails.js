@@ -10,12 +10,12 @@ import './GameDetails.css'
 
 class GameDetails extends PureComponent {
 
-  // componentWillMount() {
-  //   if (this.props.authenticated) {
-  //     if (this.props.game === null) this.props.getGames()
-  //     if (this.props.users === null) this.props.getUsers()
-  //   }
-  // }
+  componentWillMount() {
+    if (this.props.authenticated) {
+      if (this.props.game === null) this.props.getGames()
+      if (this.props.users === null) this.props.getUsers()
+    }
+  }
 
   joinGame = () => this.props.joinGame(this.props.game.id)
 
@@ -35,16 +35,9 @@ class GameDetails extends PureComponent {
   render() {
     const { game, users, authenticated, userId } = this.props
 
-<<<<<<< HEAD
     if (!authenticated) return (
       <Redirect to="/login" />
     )
-=======
-    // if (!authenticated) return (
-		// 	<Redirect to="/login" />
-		// )
-
->>>>>>> 9cb9e833276b072ce095c7945f3a318d882047cc
     if (game === null || users === null) return 'Loading...'
     if (!game) return 'Not found'
 
@@ -117,7 +110,7 @@ class GameDetails extends PureComponent {
 }
 
 const mapStateToProps = (state, props) => ({
-  // authenticated: state.currentUser !== null,
+  authenticated: state.currentUser !== null,
   userId: state.currentUser && userId(state.currentUser.jwt),
   game: state.games && state.games[props.match.params.id],
   users: state.users
