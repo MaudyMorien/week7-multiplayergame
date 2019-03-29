@@ -105,8 +105,23 @@ export default class GameController {
       const players = await Player.find({ game })
 
       if (answers.length === players.length) {
-        // How do we pick the winner?
-        console.log('someone won!')
+        console.log('all answers are submitted')
+
+      
+        const countA = {}
+        answers.forEach(function (val) { val['answerA'] = (val['answerA'] || 0) + 1 })
+        console.log('count von Count A', countA)
+        const countB = {}
+        answers.forEach(function () { countB['answerB'] = (countB['AnswerB'] || 0) + 1 })
+        console.log('count von Count B', countB)
+        if (countA.length > countB.length) {
+          return 'answer A has the most votes'
+        } else if (countA.length < countB.length) {
+          return 'answer B has the most votes'
+        } else {
+          return 'the votes are equal'
+        }
+
       } else if (answers.length < players.length) {
         console.log('still waiting for more answers')
       } else {
@@ -114,7 +129,7 @@ export default class GameController {
         console.log('too many answers!')
       }
     }
-
+    console.log('payload', game)
     io.emit('action', {
       type: 'UPDATE_GAME',
       payload: game
